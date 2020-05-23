@@ -18,7 +18,7 @@ app.set('views', 'views');
 
 connectDB();
 
-// app.use('/login', require('./routes/login/login'));
+app.use('/login', require('./routes/login/login'));
 app.use('/register', require('./routes/register/register'));
 
 app.get('/', (req, res) => {
