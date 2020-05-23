@@ -1,9 +1,8 @@
 require('dotenv').config();
 
 const express = require('express');
-const ejs = require('ejs');
-const bodyParser = require('body-parser');
 const cors = require('cors');
+const connectDB = require('./config/db');
 
 const app = express();
 
@@ -11,11 +10,16 @@ const PORT = process.env.PORT || 5000;
 const copyrightYear = new Date().getUTCFullYear();
 
 app.use(cors({ origin: true }));
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(bodyParser.json());
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
+
+connectDB();
+
+// app.use('/login', require('./routes/login/login'));
+app.use('/register', require('./routes/register/register'));
 
 app.get('/', (req, res) => {
   res.render('index', {
