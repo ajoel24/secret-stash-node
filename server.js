@@ -11,7 +11,7 @@ const copyrightYear = new Date().getUTCFullYear();
 
 app.use(cors({ origin: true }));
 app.use(express.static('public'));
-app.use(bodyParser.json());
+app.use(express.urlencoded());
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
