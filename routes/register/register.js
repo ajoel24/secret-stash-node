@@ -22,8 +22,13 @@ router.post('/', async (req, res) => {
   });
 
   try {
-    const res = await user.save();
-    console.log(res);
+    const response = await user.save();
+
+    res.render('login', {
+      pageTitle: 'Login',
+      headerTitle: 'Register successful. Login now',
+      copyrightYear: new Date().getFullYear(),
+    });
   } catch (error) {
     console.log(error);
   }
