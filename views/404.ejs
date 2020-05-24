@@ -1,0 +1,30 @@
+<%- include('./partials/head') %>
+<body>
+  <%- include('./partials/header') %>
+  <main class="container">
+    <section class="row">
+      <div class="ten columns">
+        <h1>404 Error</h1>
+        <h2>The operation failed. Please try again.</h2>
+        <a href="/login">
+            <button class="button">
+                Login
+            </button>   
+        </a> 
+        <br />
+        <a href="/register">
+            <button class="button-primary">
+                Register
+            </button>   
+        </a> 
+        <br />
+      </div>
+    </section>
+    <section class="container">
+        <h2>The specific error is:</h2>
+        <h3><%= errorText %></h3>
+    </section>
+  </main>
+  <%- include('./partials/footer.ejs') %>
+</body>
+</html>

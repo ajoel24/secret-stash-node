@@ -1,4 +1,5 @@
 const express = require('express');
+const md5 = require('md5');
 const User = require('../../models/User');
 
 const app = express();
@@ -18,19 +19,26 @@ router.post('/', async (req, res) => {
   const { email, password } = req.body;
   const user = new User({
     email,
-    password,
+    password: md5(password),
   });
 
   try {
     const response = await user.save();
 
-    res.render('login', {
-      pageTitle: 'Login',
-      headerTitle: 'Register successful. Login now',
-      copyrightYear: new Date().getFullYear(),
-    });
+    if (response) {
+      res.render('login', {
+        pageTitle: 'Login',
+        headerTitle: 'Register successful. Login now',
+        copyrightYear: new Date().getFullYear(),
+      });
+    }
   } catch (error) {
-    console.log(error);
+    res.render('404', {
+      pageTitle: 'Error',
+      headerTitle: 'Oops. An error occured :(',
+      errorText: error,
+      copyrightYear: new Date().getUTCFullYear(),
+    });
   }
 });
 
