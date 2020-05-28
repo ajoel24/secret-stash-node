@@ -17,6 +17,7 @@
     "nodemon": "^2.0.4"
   },
   "devDependencies": {
+    "bcrypt": "^4.0.1",
     "dotenv": "^8.2.0",
     "md5": "^2.2.1",
     "mongoose-encryption": "^2.0.2"

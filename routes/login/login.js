@@ -1,18 +1,21 @@
 const express = require('express');
-const md5 = require('md5');
+const bcrypt = require('bcrypt');
 const User = require('../../models/User');
+const {
+  loginRes,
+  homeRes,
+  loginErrRes,
+  loginErrRes2,
+  internalErr,
+} = require('../../responses/responses');
 
 const app = express();
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.render('login', {
-    pageTitle: 'Login | Secret Stash',
-    headerTitle: 'Login',
-    copyrightYear: new Date().getUTCFullYear(),
-  });
+  res.render('login', loginRes);
 });
 
 router.post('/', async (req, res) => {
@@ -20,29 +23,20 @@ router.post('/', async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
+
     if (user) {
-      if (user.password === md5(password)) {
-        res.render('home', {
-          pageTitle: 'Home | Secret Stash',
-          headerTitle: 'Home',
-          copyrightYear: new Date().getUTCFullYear(),
-        });
+      const hash = await bcrypt.compare(password, user.password);
+
+      if (hash) {
+        res.render('home', homeRes);
+      } else {
+        res.render('404', loginErrRes);
       }
     } else {
-      res.render('404', {
-        pageTitle: 'Error',
-        headerTitle: 'Error. User not found.',
-        errorText: 'Invalid email or password. Try again.',
-        copyrightYear: new Date().getUTCFullYear(),
-      });
+      res.render('404', loginErrRes2);
     }
   } catch (error) {
-    res.render('404', {
-      pageTitle: 'Error',
-      headerTitle: 'Oops. An error occurred',
-      errorText: 'Something went wrong. Try again later',
-      copyrightYear: new Date().getUTCFullYear,
-    });
+    res.render('404', internalErr);
   }
 });
 

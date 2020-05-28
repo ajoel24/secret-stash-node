@@ -1,44 +1,39 @@
 const express = require('express');
-const md5 = require('md5');
+const bcrypt = require('bcrypt');
 const User = require('../../models/User');
+const {
+  registerRes,
+  regSuccessRes,
+  internalErr,
+} = require('../../responses/responses');
 
 const app = express();
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.render('register', {
-    pageTitle: 'Register | Secret Stash',
-    headerTitle: 'Register',
-    copyrightYear: new Date().getUTCFullYear(),
-  });
+  res.render('register', registerRes);
 });
 
 router.post('/', async (req, res) => {
   const { email, password } = req.body;
+
+  const hash = await bcrypt.hash(password, 10);
+
   const user = new User({
     email,
-    password: md5(password),
+    password: hash,
   });
 
   try {
     const response = await user.save();
 
     if (response) {
-      res.render('login', {
-        pageTitle: 'Login',
-        headerTitle: 'Register successful. Login now',
-        copyrightYear: new Date().getFullYear(),
-      });
+      res.render('login', regSuccessRes);
     }
   } catch (error) {
-    res.render('404', {
-      pageTitle: 'Error',
-      headerTitle: 'Oops. An error occured :(',
-      errorText: error,
-      copyrightYear: new Date().getUTCFullYear(),
-    });
+    res.render('404', internalErr);
   }
 });
 
